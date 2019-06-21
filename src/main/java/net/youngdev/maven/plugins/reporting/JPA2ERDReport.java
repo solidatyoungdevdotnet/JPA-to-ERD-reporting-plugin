@@ -241,16 +241,17 @@ public class JPA2ERDReport extends AbstractMavenReport {
 
 	private String generateTableNode(Log logger, Class<?> c, Map<String, String> references) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		StringBuilder sb = new StringBuilder();
-		Annotation[] anns = c.getAnnotations();
-		for (Annotation a: anns) {
-		if (a.annotationType().getName().equals("Table")) {
-			for (Field fld: a.getClass().getFields()) {
-				logger.info(a.getClass().getName()+ " . " +fld.getName());
-			}
-		} else {
-			logger.info("found "+a.annotationType().getCanonicalName());
-		}
-		}
+//		Annotation[] anns = c.getAnnotations();
+//		for (Annotation a: anns) {
+//		if (a.annotationType().getName().equals("Table")) {
+//			for (Field fld: a.getClass().getFields()) {
+//				logger.info(a.getClass().getName()+ " . " +fld.getName());
+//			}
+//		} else {
+//			logger.info("found "+a.annotationType().getCanonicalName());
+//		}
+//		}
+		
 		String tableName = (String) ReflexiveAnnotationUtils.getAnnotationPropertyForClass(c, "javax.persistence.Table", "name");
 		logger.info(tableName);
 		if (StringUtils.isNotEmpty(tableName)) {
@@ -298,7 +299,7 @@ public class JPA2ERDReport extends AbstractMavenReport {
 				sb.append("<td port=\"" + join.annotationType().getMethod("name").invoke(join) + "\" align=\"left\">" + join.annotationType().getMethod("name").invoke(join)
 						+ "</td>");
 				String refTable = (String) ReflexiveAnnotationUtils
-						.getAnnotationPropertyForClass(fld.getType(), "Table", "name");
+						.getAnnotationPropertyForClass(fld.getType(), "javax.persistence.Table", "name");
 				references.put(tableName + ":" + join.annotationType().getMethod("name").invoke(join), refTable + ":" + join.annotationType().getMethod("referencedColumnName").invoke(join));
 
 			}
@@ -399,7 +400,9 @@ public class JPA2ERDReport extends AbstractMavenReport {
 		{
 		    List<String> classPath = new ArrayList<String>();
 		    classPath.addAll( classpathElements );
+		    getLog().info("Adding output dir to classpath = "+project.getBuild().getOutputDirectory());
 		    classPath.add( project.getBuild().getOutputDirectory() );
+		    
 		    URL[] urls = new URL[classPath.size()];
 		    int i = 0;
 		    for ( String entry : classPath )

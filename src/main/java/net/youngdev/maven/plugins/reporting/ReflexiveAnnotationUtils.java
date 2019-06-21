@@ -22,11 +22,12 @@ public class ReflexiveAnnotationUtils {
 		Object o = null;
 		try {
 			for (Annotation a : clazz.getAnnotations()) {
-				if (a.annotationType().getName().endsWith(annotationName)) {
+				if (a.annotationType().getCanonicalName().equals(annotationName)) {
 					Annotation ann = a;
 
 					if (ann != null) {
 						o = ann.annotationType().getMethod(propertyName).invoke(ann);
+						break;
 					}
 				}
 			}
