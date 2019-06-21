@@ -12,6 +12,9 @@
  
         <properties>
                 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    			<maven.compiler.target>1.8</maven.compiler.target>
+    			<maven.compiler.source>1.8</maven.compiler.source>
+    			<maven.compiler.release>8</maven.compiler.release>
         </properties>
  
         <dependencies>
@@ -54,6 +57,8 @@
 					<artifactId>commons-lang3</artifactId>
 					<version>3.9</version>
 				</dependency>
+			
+
         </dependencies>
  
  
@@ -73,9 +78,10 @@
                                 <version>3.5.1</version>
                                 <configuration>
                                         <goalPrefix>jpa2erd</goalPrefix>
+                                        <entityPackage>net.youngdev</entityPackage>
                                 </configuration>
                                 <executions>
-                                        <execution>
+                                         <execution>
                                                 <id>default-descriptor</id>
                                                 <phase>process-classes</phase>
                                         </execution>
