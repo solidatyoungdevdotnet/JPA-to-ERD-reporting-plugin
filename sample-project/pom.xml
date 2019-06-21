@@ -65,16 +65,16 @@
 			<version>1.0.2</version>
 		</dependency>
 	</dependencies>
-		<reporting>
+	<reporting>
 		<plugins>
-		   <plugin>
-			<groupId>net.youngdev.maven.plugins</groupId>
-        <artifactId>JPA-to-ERD-reporting-plugin</artifactId>
-        <version>0.0.9-SNAPSHOT</version>
-        <configuration>
-        	<entityPackage>entity</entityPackage>
-        </configuration>
-        </plugin>
+			<plugin>
+				<groupId>net.youngdev.maven.plugins</groupId>
+				<artifactId>JPA-to-ERD-reporting-plugin</artifactId>
+				<version>0.0.9-SNAPSHOT</version>
+				<configuration>
+					<entityPackage>entity</entityPackage>
+				</configuration>
+			</plugin>
 
 		</plugins>
 	</reporting>
