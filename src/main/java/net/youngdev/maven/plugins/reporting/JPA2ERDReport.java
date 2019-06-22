@@ -8,16 +8,20 @@ import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.doxia.sink.Sink;
@@ -39,6 +43,7 @@ import guru.nidi.graphviz.parse.Parser;
 
 @Mojo(name = "simple", defaultPhase = LifecyclePhase.SITE, requiresDependencyResolution = ResolutionScope.RUNTIME, requiresProject = true, threadSafe = true)
 public class JPA2ERDReport extends AbstractMavenReport {
+	private static final String REPORT_ARTIFACT_DIR_NAME = "JPA-to-ERD";
 
 	public String getOutputName() {
 		// This report will generate simple-report.html when invoked in a project with
@@ -180,7 +185,11 @@ public class JPA2ERDReport extends AbstractMavenReport {
 		// node.add(
 		// Color.named(node.name().toString()),
 		// Style.lineWidth(4).and(Style.FILLED)));
-		File outFile = new File(outputDirectory.getAbsolutePath()+File.separator+"JPA-to-ERD/db_erd.png");
+
+		FileUtils.write(new File(outputDirectory.getAbsolutePath()+File.separator+REPORT_ARTIFACT_DIR_NAME+File.separator
+				+"db_erd.dot"),dotGraph, StandardCharsets.UTF_8.name());
+				
+		File outFile = new File(outputDirectory.getAbsolutePath()+File.separator+REPORT_ARTIFACT_DIR_NAME+File.separator+"db_erd.png");
 		outFile.getParentFile().mkdirs();
 		Graphviz.fromGraph(g)
 				// .width(8048).height(6024)
@@ -188,7 +197,7 @@ public class JPA2ERDReport extends AbstractMavenReport {
 				// .width(700)
 				.render(Format.PNG).toFile(outFile);
 			mainSink.paragraph();
-			mainSink.figureGraphics("JPA-to-ERD/db_erd.png", null);
+			mainSink.figureGraphics(REPORT_ARTIFACT_DIR_NAME+"/db_erd.png", null);
 			mainSink.rawText(StringEscapeUtils.escapeHtml(dotGraph).replace("\n","<br/>"));
 		//	mainSink.text();
 			mainSink.paragraph_();
@@ -215,24 +224,37 @@ public class JPA2ERDReport extends AbstractMavenReport {
 		
 		List<Class<?>> classes =new ArrayList<>() ;
 		classes.addAll(ClassFinder.find(logger,jpaEntityPackage, sourceRoots.get(0), getProjectClassLoader()));
+		Collections.sort(classes, new Comparator<Class<?>>() {
+
+			@Override
+			public int compare(Class<?> left, Class<?> right) {
+				// TODO: Come back here and calculate edges for weight/ordering
+				return new CompareToBuilder()
+						.append(left.getFields().length, right.getFields().length)
+						.toComparison();
+			}
+			
+		});
 		Collections.reverse(classes);
 		StringBuilder sb = new StringBuilder();
-		Map<String, String> references = new HashMap<String, String>();
+		Map<String, String> references = new LinkedHashMap<String, String>();
 		sb.append(getGraphDefinition());
 		for (Class<?> c : classes) {
 			logger.info("attempting to generate node for "+c.getName());
 			sb.append(generateTableNode(logger, c, references));
 		}
+		int i=0;
 		for (Map.Entry<String, String> ref : references.entrySet()) {
 			sb.append(ref.getKey() + " -> " + ref.getValue() + " [taillabel=\""
 					+ StringUtils.split(ref.getKey(), ":")[1] + "\"");
 			sb.append(" arrowhead=\"normal\" arrowtail=\"crow\" dir=\"both\" ");
 
-			if (ref.getValue().contains("client:id")) {
+			if (i < (classes.size()+1)/2) {
 
 				sb.append("  constraint=false");
 			}
 			sb.append("];\n");
+			i++;
 		}
 		sb.append("}");
 
@@ -241,16 +263,6 @@ public class JPA2ERDReport extends AbstractMavenReport {
 
 	private String generateTableNode(Log logger, Class<?> c, Map<String, String> references) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		StringBuilder sb = new StringBuilder();
-//		Annotation[] anns = c.getAnnotations();
-//		for (Annotation a: anns) {
-//		if (a.annotationType().getName().equals("Table")) {
-//			for (Field fld: a.getClass().getFields()) {
-//				logger.info(a.getClass().getName()+ " . " +fld.getName());
-//			}
-//		} else {
-//			logger.info("found "+a.annotationType().getCanonicalName());
-//		}
-//		}
 		
 		String tableName = (String) ReflexiveAnnotationUtils.getAnnotationPropertyForClass(c, "javax.persistence.Table", "name");
 		logger.info(tableName);
