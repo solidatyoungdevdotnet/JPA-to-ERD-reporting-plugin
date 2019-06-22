@@ -1,5 +1,6 @@
 package entity;
 
+import java.util.Date;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -11,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Version;
 import javax.validation.constraints.Size;
 
@@ -35,6 +38,20 @@ public class Department {
 	@Column(name="short_name",length=15)
 	private String shortName;
 
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "create_ts")
+	private Date createTs;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "update_ts")
+	private Date updateTs;
+
+	@Column(name = "create_username")
+	private String createUsername;
+
+	@Column(name = "update_username")
+	private String updateUsername;
 	
 	
     @OrderBy("name")
