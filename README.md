@@ -44,3 +44,4 @@ include this fragment as your reporting section:
 I've noticed a few peculiarities that require your project to be written with certain conventions in order for the graph to work;
 - Every column should have either a Column annotation or JoinColumn annoation.  We use this to the get the database name
 - the jar containing javax.persistence.* annotation classes must be in compile scope
+- make sure the site plugin is includied in the build section
