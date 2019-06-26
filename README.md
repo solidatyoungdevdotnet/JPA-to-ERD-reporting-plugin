@@ -39,6 +39,8 @@ include this fragment as your reporting section:
 - Build a sample reference project
 - document config
 - Submit my handy plugin to maven central
+- Javadocs
+- 
 
 ## troubleshooting
 I've noticed a few peculiarities that require your project to be written with certain conventions in order for the graph to work;
