@@ -4,7 +4,7 @@
 
 	<groupId>net.youngdev.maven.plugins</groupId>
 	<artifactId>JPA-to-ERD-reporting-plugin</artifactId>
-	<version>0.0.9.0</version>
+	<version>0.0.9.1-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 
 	<name>JPA-to-ERD-reporting-plugin</name>
