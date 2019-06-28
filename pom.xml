@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -8,6 +10,34 @@
 	<packaging>maven-plugin</packaging>
 
 	<name>JPA-to-ERD-reporting-plugin</name>
+	<description>This plugin Reads the JPA annotations to genereage a Domain model (ERD).</description>
+
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+			<comments>Thanks for trying out my plugin</comments>
+		</license>
+	</licenses>
+	
+	 <developers>
+    <developer>
+      
+      <email>solid@youngdev.net</email>
+      <url>http://www.example.com/jdoe</url>
+      <organization>Youngdev Technologies</organization>
+      <organizationUrl>https://github.com/solidatyoungdevdotnet</organizationUrl>
+      <roles>
+        <role>architect</role>
+        <role>developer</role>
+      </roles>
+      <timezone>America/New_York</timezone>
+      <properties>
+        <!--  <picUrl>https://avatars3.githubusercontent.com/u/10110174?s=460&v=4</picUrl>-->
+      </properties>
+    </developer>
+  </developers>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -134,7 +164,7 @@
 							<groupId>org.apache.maven.plugins</groupId>
 							<artifactId>maven-javadoc-plugin</artifactId>
 							<configuration>
-							<doclint>none</doclint>
+								<doclint>none</doclint>
 								<additionalparam>-Xdoclint:none</additionalparam>
 							</configuration>
 						</plugin>
@@ -239,7 +269,7 @@
 									<goal>sign</goal>
 								</goals>
 								<configuration>
-								<executable>gpg2</executable>
+									<executable>gpg2</executable>
 								</configuration>
 							</execution>
 						</executions>
