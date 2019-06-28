@@ -20,24 +20,8 @@
 			<comments>Thanks for trying out my plugin</comments>
 		</license>
 	</licenses>
-	
-	 <developers>
-    <developer>
-      
-      <email>solid@youngdev.net</email>
-      <url>http://www.example.com/jdoe</url>
-      <organization>Youngdev Technologies</organization>
-      <organizationUrl>https://github.com/solidatyoungdevdotnet</organizationUrl>
-      <roles>
-        <role>architect</role>
-        <role>developer</role>
-      </roles>
-      <timezone>America/New_York</timezone>
-      <properties>
-        <!--  <picUrl>https://avatars3.githubusercontent.com/u/10110174?s=460&v=4</picUrl>-->
-      </properties>
-    </developer>
-  </developers>
+
+
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -278,5 +262,21 @@
 			</build>
 		</profile>
 	</profiles>
+	<developers>
+		<developer>
 
+			<email>solid@youngdev.net</email>
+			<url>http://www.example.com/jdoe</url>
+			<organization>Youngdev Technologies</organization>
+			<organizationUrl>https://github.com/solidatyoungdevdotnet</organizationUrl>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+			<timezone>America/New_York</timezone>
+			<properties>
+				<!-- <picUrl>https://avatars3.githubusercontent.com/u/10110174?s=460&v=4</picUrl> -->
+			</properties>
+		</developer>
+	</developers>
 </project>
