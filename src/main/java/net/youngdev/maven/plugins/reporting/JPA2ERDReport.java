@@ -198,6 +198,7 @@ public class JPA2ERDReport extends AbstractMavenReport {
 				.render(Format.PNG).toFile(outFile);
 			mainSink.paragraph();
 			mainSink.figureGraphics(REPORT_ARTIFACT_DIR_NAME+"/db_erd.png", null);
+			//<img src="data:image/gif;base64,ddefa9323294c=="/>
 			mainSink.rawText(StringEscapeUtils.escapeHtml(dotGraph).replace("\n","<br/>"));
 		//	mainSink.text();
 			mainSink.paragraph_();
