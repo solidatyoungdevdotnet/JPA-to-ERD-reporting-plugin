@@ -254,6 +254,7 @@
 								</goals>
 								<configuration>
 									<executable>gpg2</executable>
+									<keyname>F9D62868079585AB68E7FC5CCADA3C8A3974E89B</keyname>
 								</configuration>
 							</execution>
 						</executions>
