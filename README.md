@@ -32,14 +32,15 @@ include this fragment as your reporting section:
 - Primary and Foriegn key detection
 
 ## Coming soon
-- new license (I'm leaning toward BSD but I need to check all the dependencies first)
+- ~~new license (I'm leaning toward BSD but I need to check all the dependencies first)~~
 - Clean up the actual report layout 
 - refactor the code.  The code is fugly and I don't wan't future employers to look at it
 - Code coverage
-- Build a sample reference project
+- ~~Build a sample reference project~~
 - document config
-- Submit my handy plugin to maven central
+- ~~Submit my handy plugin to maven central~~
 - Javadocs
+- gradle plugin
 - 
 
 ## troubleshooting
@@ -47,4 +48,3 @@ I've noticed a few peculiarities that require your project to be written with ce
 - Every column should have either a Column annotation or JoinColumn annoation.  We use this to the get the database name
 - the jar containing javax.persistence.* annotation classes must be in compile scope
 - make sure the site plugin is includied in the build section
-- include gradle plugin
