@@ -14,7 +14,7 @@ include this fragment as your reporting section:
 			<plugin>
 				<groupId>net.youngdev.maven.plugins</groupId>
 				<artifactId>JPA-to-ERD-reporting-plugin</artifactId>
-				<version>0.0.9-SNAPSHOT</version>
+				<version>0.0.9.0</version>
 				<configuration>
 					<entityPackage>my.entity.package.name</entityPackage>
 				</configuration>
