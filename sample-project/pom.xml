@@ -70,9 +70,16 @@
 			<plugin>
 				<groupId>net.youngdev.maven.plugins</groupId>
 				<artifactId>JPA-to-ERD-reporting-plugin</artifactId>
-				<version>0.0.9-SNAPSHOT</version>
+				<version>0.0.9.1-SNAPSHOT</version>
 				<configuration>
 					<entityPackage>entity</entityPackage>
+					<graphEngine>FDP</graphEngine>
+					<graphConfig>graph [pad="1.0", nodesep="2", splines=ortho]; 
+						node [shape=plain]; 
+						repulsiveforce=45;
+						K=6.5;
+
+					</graphConfig>
 				</configuration>
 			</plugin>
 
