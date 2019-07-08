@@ -1,5 +1,6 @@
 package net.youngdev.maven.plugins.reporting;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -9,6 +10,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -19,6 +22,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.builder.CompareToBuilder;
@@ -79,9 +83,9 @@ public class JPA2ERDReport extends AbstractMavenReport {
 
 	/**
 	 * graph engine valid values are DOT, CIRCO, NEATO, TWOPI, PATCHWORK, OSAGE, FDP 
-	 * DOT is the default
+	 * FDP is the default
 	 */
-	@Parameter(property = "graphEngine", defaultValue = "DOT", required = false)
+	@Parameter(property = "graphEngine", defaultValue = "FDP", required = false)
 	private String graphEngine;
 	
 	/**
@@ -197,6 +201,7 @@ public class JPA2ERDReport extends AbstractMavenReport {
 		// Content
 
 		logger.info(dotGraph);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {
 			MutableGraph g = Parser.read(dotGraph);
 //        		Graphviz.fromGraph(g).width(700).render(Format.PNG).toFile(new File("example/ex4-1.png"));
@@ -214,7 +219,7 @@ public class JPA2ERDReport extends AbstractMavenReport {
 			// Style.lineWidth(4).and(Style.FILLED)));
 
 			FileUtils.write(new File(outputDirectory.getAbsolutePath() + File.separator + REPORT_ARTIFACT_DIR_NAME
-					+ File.separator + "db_erd.dot"), dotGraph, StandardCharsets.UTF_8.name());
+					+ File.separator + "db_erd.graphviz"), dotGraph, StandardCharsets.UTF_8.name());
 
 			File outFile = new File(outputDirectory.getAbsolutePath() + File.separator + REPORT_ARTIFACT_DIR_NAME
 					+ File.separator + "db_erd.png");
@@ -225,9 +230,13 @@ public class JPA2ERDReport extends AbstractMavenReport {
 					// .width(8048).height(6024)
 					.fontAdjust(.87)
 					// .width(700)
-					.render(Format.PNG).toFile(outFile);
+					.render(Format.PNG).toOutputStream(baos);
 			mainSink.paragraph();
-			mainSink.figureGraphics(REPORT_ARTIFACT_DIR_NAME + "/db_erd.png", null);
+			mainSink.figureGraphics("data:image/png;base64,"+new String(
+					new Base64().encode(baos.toByteArray())),null);
+							
+			FileUtils.writeByteArrayToFile(new File(REPORT_ARTIFACT_DIR_NAME + "/db_erd.png"), baos.toByteArray());				
+			
 			// <img src="data:image/gif;base64,ddefa9323294c=="/>
 			mainSink.rawText(StringEscapeUtils.escapeHtml(dotGraph).replace("\n", "<br/>"));
 			// mainSink.text();
