@@ -5,7 +5,7 @@ The resulting diagram should be logically correct even if not applicable to a gi
 Here is sample report screen shot:
 ![report screenshot](./report_screenshot.png)
 
-## how to enable it (Assuming you compiled the project and installed it into maven local)
+## how to enable it 
 include this fragment as your reporting section:
 ```xml
 
@@ -52,7 +52,7 @@ start=regular;
 - refactor the code.  The code is fugly and I don't wan't future employers to look at it
 - Code coverage
 - ~~Build a sample reference project~~
-- document config
+- ~~document config~~
 - ~~Submit my handy plugin to maven central~~
 - Javadocs
 - gradle plugin
@@ -62,4 +62,4 @@ start=regular;
 I've noticed a few peculiarities that require your project to be written with certain conventions in order for the graph to work;
 - Every column should have either a Column annotation or JoinColumn annoation.  We use this to the get the database name
 - the jar containing javax.persistence.* annotation classes must be in compile scope
-- make sure the site plugin is includied in the build section
+- make sure the site plugin is included in the build section with this plugin turned on
