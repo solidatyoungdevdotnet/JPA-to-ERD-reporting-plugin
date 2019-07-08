@@ -14,7 +14,7 @@ include this fragment as your reporting section:
 			<plugin>
 				<groupId>net.youngdev.maven.plugins</groupId>
 				<artifactId>JPA-to-ERD-reporting-plugin</artifactId>
-				<version>0.0.9.0</version>
+				<version>0.0.9.2</version>
 				<configuration>
 					<entityPackage>my.entity.package.name</entityPackage>
 				</configuration>
@@ -23,6 +23,21 @@ include this fragment as your reporting section:
 		</plugins>
 	</reporting>
 ```
+
+Possible configuration options are:
+- entityPackage - this is the canonical package name which holds the JPA entities
+- graphEngine - Possible values are DOT, NEATO, TWOPI, CIRCO, FDP - default is FDP
+- graphConfig - This is the beginning portion of the digraph right after the opening curly bracket The default is
+```
+graph [pad="1.0", nodesep="2", splines=ortho];
+node [shape=plain];
+repulsiveforce=45;
+K=6.5;
+start=regular;
+```
+- arrowHeadStyle - possible values can be found here: https://www.graphviz.org/doc/info/attrs.html#k:arrowType.  My default is "none"
+- labelTargetField - boolean whether or not to label the head of the edge (target of the foreign key) with the field name
+- 
 
 ## General features
 - Supports Relationship detection with directed edges between nodes (crow's foot)
