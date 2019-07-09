@@ -56,10 +56,16 @@ start=regular;
 - ~~Submit my handy plugin to maven central~~
 - Javadocs
 - gradle plugin
-- 
+- Make font configurable
+
 
 ## troubleshooting
 I've noticed a few peculiarities that require your project to be written with certain conventions in order for the graph to work;
 - Every column should have either a Column annotation or JoinColumn annoation.  We use this to the get the database name
 - the jar containing javax.persistence.* annotation classes must be in compile scope
 - make sure the site plugin is included in the build section with this plugin turned on
+- If you get a graph where all the nodes and edges are visible but the text is missing, it means your JVM could not find
+  the true type font (right now it uses Courier New), you need to install msttcorefonts package and restart the JVM.
+  I have only encountered this on linux.  Ubuntu example: apt install msttcorefonts
+  
+  
