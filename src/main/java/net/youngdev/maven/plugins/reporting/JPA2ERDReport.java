@@ -107,6 +107,11 @@ public class JPA2ERDReport extends AbstractMavenReport {
 	@Parameter(property = "labelTargetField", defaultValue = "true", required = false)
 	private boolean labelTargetField;
 
+	/**
+	 * label target field
+	 */
+	@Parameter(property = "rootNode",  required = false)
+	private String rootNode;
 
 	/**
 	 * Where the HTML pages of the report will be created.
@@ -159,9 +164,7 @@ public class JPA2ERDReport extends AbstractMavenReport {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
-//		for (String srcRoot: sourceRoots) {
-//			logger.info(srcRoot);
-//		}
+
 
 		// Some info
 		logger.info(
@@ -235,7 +238,8 @@ public class JPA2ERDReport extends AbstractMavenReport {
 			mainSink.figureGraphics("data:image/png;base64,"+new String(
 					new Base64().encode(baos.toByteArray())),null);
 							
-			FileUtils.writeByteArrayToFile(new File(REPORT_ARTIFACT_DIR_NAME + "/db_erd.png"), baos.toByteArray());				
+			FileUtils.writeByteArrayToFile(new File(outputDirectory.getAbsolutePath() + File.separator 
+					+ REPORT_ARTIFACT_DIR_NAME + File.separator +"db_erd.png"), baos.toByteArray());				
 			
 			// <img src="data:image/gif;base64,ddefa9323294c=="/>
 			mainSink.rawText(StringEscapeUtils.escapeHtml(dotGraph).replace("\n", "<br/>"));
@@ -344,16 +348,18 @@ public class JPA2ERDReport extends AbstractMavenReport {
 			throws IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException,
 			IllegalAccessException {
 		StringBuilder sb = new StringBuilder();
-		sb.append("<tr");
+		sb.append("<tr ");
 		Annotation col = ReflexiveAnnotationUtils.getAnnotationForBeanProperty(c, fld.getName(),
 				"javax.persistence.Column");
+		String port = StringUtils.EMPTY;
 		if (col == null) {
 			// sb.append("<tr><td> Column name missing: "+fld.getName()+"</td></tr>\n");
 
 			Annotation join = ReflexiveAnnotationUtils.getAnnotationForBeanProperty(c, fld.getName(),
 					"javax.persistence.JoinColumn");
 			if (join != null) {
-				sb.append(" port=\"" + join.annotationType().getMethod("name").invoke(join) + "\"><td align=\"left\">"
+				port = (String)join.annotationType().getMethod("name").invoke(join);
+				sb.append(" PORT=\"" + port  + "\"><td align=\"left\">"
 						+ join.annotationType().getMethod("name").invoke(join) + "</td>");
 				String refTable = (String) ReflexiveAnnotationUtils.getAnnotationPropertyForClass(fld.getType(),
 						"javax.persistence.Table", "name");
@@ -362,7 +368,8 @@ public class JPA2ERDReport extends AbstractMavenReport {
 
 			}
 		} else {
-			sb.append(" port=\"" + col.annotationType().getMethod("name").invoke(col) + "\"><td align=\"left\">"
+			port = (String)col.annotationType().getMethod("name").invoke(col);
+			sb.append(" PORT=\"" + port  + "\"><td align=\"left\">"
 					+ col.annotationType().getMethod("name").invoke(col) + "</td>");
 
 		}
@@ -460,6 +467,10 @@ public class JPA2ERDReport extends AbstractMavenReport {
 				graph = graph + "   repulsiveforce=45;\n";
 				graph = graph + "   K=6.5;\n";
 				graph = graph + "   start=regular;\n";
+				if (StringUtils.isNotEmpty(rootNode)) {
+
+					graph = graph + "   root="+rootNode+";\n";
+				}
 						//+ " graph [pad=\"0.5\", nodesep=\"2\"];\n" 
 				//+ " node [shape=plain];\n" 
 				//+ " start=regular\n";
