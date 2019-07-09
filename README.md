@@ -36,8 +36,7 @@ K=6.5;
 start=regular;
 ```
 - arrowHeadStyle - possible values can be found here: https://www.graphviz.org/doc/info/attrs.html#k:arrowType.  My default is "none"
-- labelTargetField - boolean whether or not to label the head of the edge (target of the foreign key) with the field name
-- 
+- labelTargetField - boolean whether or not to label the head of the edge (target of the foreign key) with the field name 
 
 ## General features
 - Supports Relationship detection with directed edges between nodes (crow's foot)
@@ -61,7 +60,12 @@ start=regular;
 
 ## troubleshooting
 I've noticed a few peculiarities that require your project to be written with certain conventions in order for the graph to work;
-- Every column should have either a Column annotation or JoinColumn annoation.  We use this to the get the database name
+- Every field must meet the following requirements:
+	- must have either a @Column annotation or @JoinColumn annoation.
+	- field cannot be transient
+	- field cannot be annotated as @Transient
+	- field cannot be static
+	- does not work on getter/setter methods
 - the jar containing javax.persistence.* annotation classes must be in compile scope
 - make sure the site plugin is included in the build section with this plugin turned on
 - If you get a graph where all the nodes and edges are visible but the text is missing, it means your JVM could not find
