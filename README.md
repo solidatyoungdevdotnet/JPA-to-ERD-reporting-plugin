@@ -56,6 +56,8 @@ start=regular;
 - Javadocs
 - gradle plugin
 - Make font configurable
+- Unique constraint (From @Table annotation)
+- Nullable detection
 
 
 ## troubleshooting
