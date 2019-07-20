@@ -21,6 +21,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -247,8 +248,8 @@ public class JPA2ERDReport extends AbstractMavenReport {
 
 
 			if (embedImage) {
-				mainSink.figureGraphics("data:image/png;base64, "+StringUtils.replace(new String(
-					new Base64().encode(baos.toByteArray()), StandardCharsets.UTF_8), "/","%0a/"));
+				mainSink.figureGraphics("data:image/png;base64,"+new URLCodec().encode(new String(
+					new Base64().encode(baos.toByteArray()), StandardCharsets.UTF_8)));
 			} else {
 				mainSink.figureGraphics("./"+REPORT_ARTIFACT_DIR_NAME+"/"+IMAGE_FILENAME);
 			}
