@@ -248,7 +248,7 @@ public class JPA2ERDReport extends AbstractMavenReport {
 
 			if (embedImage) {
 				mainSink.figureGraphics("data:image/png;base64, "+new String(
-					new Base64().encode(baos.toByteArray()), StandardCharsets.UTF_8),null);
+					new Base64().encode(baos.toByteArray()), StandardCharsets.UTF_8));
 			} else {
 				mainSink.figureGraphics("./"+REPORT_ARTIFACT_DIR_NAME+"/"+IMAGE_FILENAME);
 			}
