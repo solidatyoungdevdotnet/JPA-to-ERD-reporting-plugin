@@ -10,8 +10,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,9 +22,10 @@ import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.builder.CompareToBuilder;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.plugin.logging.Log;
@@ -37,7 +36,6 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.MavenReportException;
-import org.codehaus.plexus.util.ExceptionUtils;
 
 import guru.nidi.graphviz.attribute.Font;
 import guru.nidi.graphviz.engine.Engine;
@@ -49,6 +47,8 @@ import guru.nidi.graphviz.parse.Parser;
 @Mojo(name = "simple", defaultPhase = LifecyclePhase.SITE, requiresDependencyResolution = ResolutionScope.RUNTIME, requiresProject = true, threadSafe = true)
 public class JPA2ERDReport extends AbstractMavenReport {
 	private static final String REPORT_ARTIFACT_DIR_NAME = "JPA-to-ERD";
+
+	private static final String IMAGE_FILENAME = "db_erd.png";
 
 	public String getOutputName() {
 		// This report will generate simple-report.html when invoked in a project with
@@ -106,6 +106,12 @@ public class JPA2ERDReport extends AbstractMavenReport {
 	 */
 	@Parameter(property = "labelTargetField", defaultValue = "true", required = false)
 	private boolean labelTargetField;
+	
+	/**
+	 * label target field
+	 */
+	@Parameter(property = "embedImage", defaultValue = "false", required = false)
+	private boolean embedImage;
 
 	/**
 	 * label target field
@@ -234,22 +240,27 @@ public class JPA2ERDReport extends AbstractMavenReport {
 					.fontAdjust(.87)
 					// .width(700)
 					.render(Format.PNG).toOutputStream(baos);
-			mainSink.paragraph();
-			mainSink.figureGraphics("data:image/png;base64,"+new String(
-					new Base64().encode(baos.toByteArray())),null);
-							
 			FileUtils.writeByteArrayToFile(new File(outputDirectory.getAbsolutePath() + File.separator 
-					+ REPORT_ARTIFACT_DIR_NAME + File.separator +"db_erd.png"), baos.toByteArray());				
+					+ REPORT_ARTIFACT_DIR_NAME + File.separator +IMAGE_FILENAME), baos.toByteArray());	
+			mainSink.paragraph();
+			if (embedImage) {
+				mainSink.figureGraphics("data:image/png;base64, "+new String(
+					new Base64().encode(baos.toByteArray()), StandardCharsets.UTF_8),null);
+			} else {
+				mainSink.figureGraphics("./"+REPORT_ARTIFACT_DIR_NAME+"/"+IMAGE_FILENAME);
+				
+			}
+						
 			
 			// <img src="data:image/gif;base64,ddefa9323294c=="/>
-			mainSink.rawText(StringEscapeUtils.escapeHtml(dotGraph).replace("\n", "<br/>"));
+			mainSink.rawText(StringEscapeUtils.escapeHtml4(dotGraph).replace("\n", "<br/>"));
 			// mainSink.text();
 			mainSink.paragraph_();
 
 		} catch (Exception e) {
 			mainSink.paragraph();
-			mainSink.text("This page provides simple information, like its location: ");
-			mainSink.text(ExceptionUtils.getFullStackTrace(e));
+			mainSink.text("failed to produce the graph: ");
+			mainSink.text(ExceptionUtils.getStackTrace(e));
 			mainSink.paragraph_();
 
 		}
