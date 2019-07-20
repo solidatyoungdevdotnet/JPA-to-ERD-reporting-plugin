@@ -246,7 +246,7 @@ public class JPA2ERDReport extends AbstractMavenReport {
 			FileUtils.writeByteArrayToFile(new File(outputDirectory.getAbsolutePath() + File.separator 
 					+ REPORT_ARTIFACT_DIR_NAME + File.separator +IMAGE_FILENAME), baos.toByteArray());	
 			mainSink.paragraph();
-			mainSink.figure();
+		//	mainSink.figure();
 
 			SinkEventAttributeSet atts = new SinkEventAttributeSet();
 			atts.addAttribute( SinkEventAttributes.ALT, "JPA ERD graph" );
@@ -258,7 +258,7 @@ public class JPA2ERDReport extends AbstractMavenReport {
 			} else {
 				mainSink.figureGraphics("./"+REPORT_ARTIFACT_DIR_NAME+"/"+IMAGE_FILENAME,atts);
 			}
-			mainSink.figure_();
+		//	mainSink.figure_();
 
 
 			mainSink.paragraph_();			
