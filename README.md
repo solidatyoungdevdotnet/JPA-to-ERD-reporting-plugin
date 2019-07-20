@@ -59,6 +59,7 @@ start=regular;
 - Make font configurable
 - Unique constraint (From @Table annotation)
 - Nullable detection
+- numeric scale + precision detection
 
 
 ## troubleshooting
