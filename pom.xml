@@ -4,7 +4,7 @@
 
 	<groupId>net.youngdev.maven.plugins</groupId>
 	<artifactId>JPA-to-ERD-reporting-plugin</artifactId>
-	<version>0.0.9.10</version>
+	<version>0.0.9.11-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 
 	<name>JPA-to-ERD-reporting-plugin</name>
@@ -52,7 +52,7 @@
 		<developerConnection>scm:git:git@github.com:solidatyoungdevdotnet/JPA-to-ERD-reporting-plugin.git</developerConnection>
 		<url>https://github.com/solidatyoungdevdotnet/JPA-to-ERD-reporting-plugin</url>
 	
-	  <tag>JPA-to-ERD-reporting-plugin-0.0.9.10</tag>
+	  <tag>HEAD</tag>
   </scm>
 	<dependencies>
 		<!-- reporting API -->
