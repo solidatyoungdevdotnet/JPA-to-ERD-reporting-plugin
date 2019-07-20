@@ -29,6 +29,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.doxia.sink.Sink;
+import org.apache.maven.doxia.sink.SinkEventAttributes;
+import org.apache.maven.doxia.sink.impl.SinkEventAttributeSet;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -111,7 +113,7 @@ public class JPA2ERDReport extends AbstractMavenReport {
 	/**
 	 * label target field
 	 */
-	@Parameter(property = "embedImage", defaultValue = "true", required = false)
+	@Parameter(property = "embedImage", defaultValue = "false", required = false)
 	private boolean embedImage;
 
 	/**
@@ -246,12 +248,15 @@ public class JPA2ERDReport extends AbstractMavenReport {
 			mainSink.paragraph();
 			mainSink.figure();
 
+			SinkEventAttributeSet atts = new SinkEventAttributeSet();
+			atts.addAttribute( SinkEventAttributes.ALT, "JPA ERD graph" );
+			
 
 			if (embedImage) {
 				mainSink.figureGraphics("data:image/png;base64,"+new URLCodec().encode(new String(
-					new Base64().encode(baos.toByteArray()), StandardCharsets.UTF_8)));
+					new Base64().encode(baos.toByteArray()), StandardCharsets.UTF_8)),atts);
 			} else {
-				mainSink.figureGraphics("./"+REPORT_ARTIFACT_DIR_NAME+"/"+IMAGE_FILENAME);
+				mainSink.figureGraphics("./"+REPORT_ARTIFACT_DIR_NAME+"/"+IMAGE_FILENAME,atts);
 			}
 			mainSink.figure_();
 
