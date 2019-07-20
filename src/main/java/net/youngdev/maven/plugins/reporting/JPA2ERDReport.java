@@ -110,7 +110,7 @@ public class JPA2ERDReport extends AbstractMavenReport {
 	/**
 	 * label target field
 	 */
-	@Parameter(property = "embedImage", defaultValue = "false", required = false)
+	@Parameter(property = "embedImage", defaultValue = "true", required = false)
 	private boolean embedImage;
 
 	/**
@@ -243,15 +243,20 @@ public class JPA2ERDReport extends AbstractMavenReport {
 			FileUtils.writeByteArrayToFile(new File(outputDirectory.getAbsolutePath() + File.separator 
 					+ REPORT_ARTIFACT_DIR_NAME + File.separator +IMAGE_FILENAME), baos.toByteArray());	
 			mainSink.paragraph();
+			mainSink.figure();
+
+
 			if (embedImage) {
 				mainSink.figureGraphics("data:image/png;base64, "+new String(
 					new Base64().encode(baos.toByteArray()), StandardCharsets.UTF_8),null);
 			} else {
 				mainSink.figureGraphics("./"+REPORT_ARTIFACT_DIR_NAME+"/"+IMAGE_FILENAME);
-				
 			}
-						
-			
+			mainSink.figure_();
+
+
+			mainSink.paragraph_();			
+			mainSink.paragraph();
 			// <img src="data:image/gif;base64,ddefa9323294c=="/>
 			mainSink.rawText(StringEscapeUtils.escapeHtml4(dotGraph).replace("\n", "<br/>"));
 			// mainSink.text();
