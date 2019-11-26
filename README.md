@@ -60,6 +60,8 @@ start=regular;
 - Unique constraint (From @Table annotation)
 - Nullable detection
 - numeric scale + precision detection
+- Verify mappedsuperclass
+- Check nullpointer on ClassFinder:64
 
 
 ## troubleshooting

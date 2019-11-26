@@ -56,16 +56,20 @@ public class ClassFinder {
 	            throw new IllegalArgumentException(String.format(BAD_PACKAGE_ERROR, scannedPath, scannedPackage));
 	        }
 
-        	URLClassLoader loader = new URLClassLoader(scannedUrls.toArray(new URL[] {}));
+        	//URLClassLoader loader = new URLClassLoader(scannedUrls.toArray(new URL[] {}));
 	        for (URL scannedUrl : scannedUrls) {
 	        	logger.error("found package url: {} for url {}"
 	        			+scannedUrl.getFile() +" "+ scannedUrl);
-	        	classes.add(
-	        			classLoader.loadClass(
-	        					//StringUtils.substringAfterLast(
-	        					StringUtils.replace(StringUtils.remove(StringUtils.remove(scannedUrl.getPath(), sourceRoot+File.separator ), CLASS_SUFFIX),File.separator,""+DOT)
-	        					//,""+DOT)
-	        					));
+	        	String fqcn = StringUtils.replace(StringUtils.remove(
+	        			StringUtils.remove(scannedUrl.getPath(), 
+	        					sourceRoot+File.separator ), CLASS_SUFFIX),File.separator,""+DOT);
+    			logger.info("Identified "+fqcn+" for classloading");
+    			Class<?> classToLoad = classLoader.loadClass(fqcn);
+    			if (classToLoad != null ) {
+    				classes.add(classToLoad);
+    			} else {
+    				logger.error("Could not load "+fqcn);
+    			}
 //	        			Thread.currentThread().getContextClassLoader().loadClass(name));
 //	        	
 //	        	File scannedDir = new File(URLDecoder.decode(scannedUrl.getFile(), StandardCharsets.UTF_8.name()));
