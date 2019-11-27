@@ -21,6 +21,7 @@ import org.apache.maven.plugin.logging.Log;
  * @author Matt Young
  * @version 
  */
+@Deprecated // This impl has all kinds of issues cross platform.  pulling in Guava reflect to replace it
 public class ClassFinder {
 //	private static final Logger log = LoggerFactory.getLogger(ClassFinder.class);
 
@@ -70,15 +71,7 @@ public class ClassFinder {
     			} else {
     				logger.error("Could not load "+fqcn);
     			}
-//	        			Thread.currentThread().getContextClassLoader().loadClass(name));
-//	        	
-//	        	File scannedDir = new File(URLDecoder.decode(scannedUrl.getFile(), StandardCharsets.UTF_8.name()));
-//	        	
-//	        	for (File file : scannedDir.listFiles()) {
-//	        		if (file != null) {
-//	        			classes.addAll(find(file, scannedPackage));
-//	        		}
-//	        	}
+
 	        }
     	} catch (Exception e) {
     		logger.error("Exception occurred trying to iterate over multiple classpath urls" , e);
