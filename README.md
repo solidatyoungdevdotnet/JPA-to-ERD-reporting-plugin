@@ -37,7 +37,7 @@ start=regular;
 ```
 - arrowHeadStyle - possible values can be found here: https://www.graphviz.org/doc/info/attrs.html#k:arrowType.  My default is "none"
 - labelTargetField - boolean whether or not to label the head of the edge (target of the foreign key) with the field name 
-- headerColor - Color (in hex) used to shade the entity table name background.  The new default is ![#98BFDA] (https://placehold.it/15/98BFDA/000000?text=+) #98BFDA (MySQLWorkbench) the old default used to be ![#B19CD9] (https://placehold.it/15/B19CD9/000000?text=+) #B19CD9 (ERMaster)
+- headerColor - Color (in hex) used to shade the entity table name background.  The new default is ![#98BFDA] (https://placehold.it/15/98BFDA/000000?text=+) `#98BFDA` (MySQLWorkbench) the old default used to be ![#B19CD9] (https://placehold.it/15/B19CD9/000000?text=+) `#B19CD9` (ERMaster)
 - embedImage - (experimental) boolean value specifying whether the graph images should be base 64 encoded into the report html or linked to the external image.  The default is false
 
  
