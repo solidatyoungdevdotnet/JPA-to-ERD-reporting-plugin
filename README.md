@@ -14,7 +14,7 @@ include this fragment as your reporting section:
 			<plugin>
 				<groupId>net.youngdev.maven.plugins</groupId>
 				<artifactId>JPA-to-ERD-reporting-plugin</artifactId>
-				<version>0.0.9.10</version>
+				<version>0.0.9.12</version>
 				<configuration>
 					<entityPackage>my.entity.package.name</entityPackage>
 				</configuration>
@@ -37,8 +37,10 @@ start=regular;
 ```
 - arrowHeadStyle - possible values can be found here: https://www.graphviz.org/doc/info/attrs.html#k:arrowType.  My default is "none"
 - labelTargetField - boolean whether or not to label the head of the edge (target of the foreign key) with the field name 
+- headerColor - Color (in hex) used to shade the entity table name background.  The new default is ![#98BFDA] #98BFDA (MySQLWorkbench) the old default used to be ![#B19CD9] #B19CD9 (ERMaster)
 - embedImage - (experimental) boolean value specifying whether the graph images should be base 64 encoded into the report html or linked to the external image.  The default is false
 
+ 
 ## General features
 - Supports Relationship detection with directed edges between nodes (crow's foot)
 - based on graphviz so the dot layout script is easily pulled from the report
