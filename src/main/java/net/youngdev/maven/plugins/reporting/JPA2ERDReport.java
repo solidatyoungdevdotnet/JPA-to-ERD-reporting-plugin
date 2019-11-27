@@ -2,6 +2,7 @@ package net.youngdev.maven.plugins.reporting;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -19,6 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.net.URLCodec;
@@ -39,6 +41,8 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.MavenReportException;
+
+import com.google.common.reflect.ClassPath;
 
 import guru.nidi.graphviz.attribute.Font;
 import guru.nidi.graphviz.engine.Engine;
@@ -83,6 +87,14 @@ public class JPA2ERDReport extends AbstractMavenReport {
 			// defaultValue = "${entityPackage}",
 			required = true)
 	private String entityPackage;
+
+	/**
+	 * Package where you expect to find the entities
+	 */
+	@Parameter(property = "headerColor",
+			defaultValue = "#98BFDA", // mysqlworkbench: #98BFDA, ERMaster: #B19CD9 (purplish) 
+			required = false)
+	private String headerColor;
 
 	/**
 	 * graph engine valid values are DOT, CIRCO, NEATO, TWOPI, PATCHWORK, OSAGE, FDP 
@@ -283,14 +295,27 @@ public class JPA2ERDReport extends AbstractMavenReport {
 	}
 
 	public String generateGraphviz(Log logger, String jpaEntityPackage, List<String> sourceRoots)
-			throws DependencyResolutionRequiredException, MalformedURLException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+			throws DependencyResolutionRequiredException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException {
 
 		// List<String> sourceRoots = project.getCompileSourceRoots();
 
 		List<Class<?>> classes = new ArrayList<>();
-		classes.addAll(ClassFinder.find(logger, jpaEntityPackage, sourceRoots.get(0), getProjectClassLoader()));
-		Collections.sort(classes, new Comparator<Class<?>>() {
+		
+		ClassLoader cl = getProjectClassLoader();
+		
+		
+	    Set<ClassPath.ClassInfo> classesInPackage = ClassPath.from(cl).getAllClasses();
+
+	    
+		for (ClassPath.ClassInfo cinfo: classesInPackage) {
+			logger.debug("found "+cinfo+ " package name is "+cinfo.getPackageName());
+			if (cinfo.getPackageName().equals(jpaEntityPackage)) {
+				classes.add(cinfo.load());
+			}
+		}
+		logger.info("identified "+ classes.size()+" classes");
+	    Collections.sort(classes, new Comparator<Class<?>>() {
 
 			@Override
 			public int compare(Class<?> left, Class<?> right) {
@@ -325,7 +350,8 @@ public class JPA2ERDReport extends AbstractMavenReport {
 
 		return sb.toString();
 	}
-
+	
+	
 	private String generateTableNode(Log logger, Class<?> c, Map<String, String> references)
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException,
 			SecurityException {
@@ -337,16 +363,16 @@ public class JPA2ERDReport extends AbstractMavenReport {
 		if (StringUtils.isNotEmpty(tableName)) {
 			sb.append(tableName);
 			sb.append(" [label=<\n");
-			sb.append("<table border=\"0\" cellspacing=\"0\" cellborder=\"1\">\n");
-			sb.append("<tr><td bgcolor=\"#B19CD9\" align=\"left\" colspan=\"2\">" + tableName + "</td></tr>\n");
+			sb.append("<table border=\"1\" cellspacing=\"0\" cellborder=\"0\">\n"); //rounded allows bg color to bleed (ie. style=\"rounded\")
+			sb.append("<tr><td bgcolor=\""+headerColor+"\" align=\"left\" colspan=\"2\">" + tableName + "</td></tr>\n");
 			Field[] flds = c.getDeclaredFields();
-
+			int rowIdx = 0;
 			for (Field fld : flds) {
 				if (!Modifier.isStatic(fld.getModifiers()) && !Modifier.isTransient(fld.getModifiers())
 						&& !Collection.class.isAssignableFrom(fld.getType())
 						&& hasAnyOfAnnotation(c, fld, "javax.persistence.Column", "javax.persistence.JoinColumn")) {
-					sb.append(buildNodeRowMarkup(c, tableName, fld, references));
-
+					sb.append(buildNodeRowMarkup(c, tableName, fld, references, rowIdx));
+					rowIdx++;
 				}
 			}
 			sb.append("</table>>];\n\n");
@@ -366,9 +392,11 @@ public class JPA2ERDReport extends AbstractMavenReport {
 		return foundAny;
 	}
 
-	private Object buildNodeRowMarkup(Class<?> c, String tableName, Field fld, Map<String, String> references)
+	private String buildNodeRowMarkup(Class<?> c, String tableName, Field fld, Map<String, String> references, int rowIdx)
 			throws IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException,
 			IllegalAccessException {
+		
+		String bgcolor = ((rowIdx % 2==0)?"#ffffff":"#efefef");
 		StringBuilder sb = new StringBuilder();
 		sb.append("<tr ");
 		Annotation col = ReflexiveAnnotationUtils.getAnnotationForBeanProperty(c, fld.getName(),
@@ -381,7 +409,7 @@ public class JPA2ERDReport extends AbstractMavenReport {
 					"javax.persistence.JoinColumn");
 			if (join != null) {
 				port = (String)join.annotationType().getMethod("name").invoke(join);
-				sb.append(" PORT=\"" + port  + "\"><td align=\"left\">"
+				sb.append(" PORT=\"" + port  + "\"><td align=\"left\" bgcolor=\""+bgcolor+"\">"
 						+ join.annotationType().getMethod("name").invoke(join) + "</td>");
 				String refTable = (String) ReflexiveAnnotationUtils.getAnnotationPropertyForClass(fld.getType(),
 						"javax.persistence.Table", "name");
@@ -391,11 +419,11 @@ public class JPA2ERDReport extends AbstractMavenReport {
 			}
 		} else {
 			port = (String)col.annotationType().getMethod("name").invoke(col);
-			sb.append(" PORT=\"" + port  + "\"><td align=\"left\">"
+			sb.append(" PORT=\"" + port  + "\"><td align=\"left\" bgcolor=\""+bgcolor+"\">"
 					+ col.annotationType().getMethod("name").invoke(col) + "</td>");
 
 		}
-		sb.append("<td align=\"left\">" + StringUtils.trim(buildTypeDef(c, fld)) + "</td>");
+		sb.append("<td align=\"left\" bgcolor=\""+bgcolor+"\">" + StringUtils.trim(buildTypeDef(c, fld)) + "</td>");
 		sb.append("</tr>\n");
 		return sb.toString();
 	}
@@ -507,13 +535,13 @@ public class JPA2ERDReport extends AbstractMavenReport {
 	private ClassLoader getProjectClassLoader() throws DependencyResolutionRequiredException, MalformedURLException {
 		List<String> classPath = new ArrayList<String>();
 		classPath.addAll(classpathElements);
-		getLog().info("Adding output dir to classpath = " + project.getBuild().getOutputDirectory());
+		getLog().debug("Adding output dir to classpath = " + project.getBuild().getOutputDirectory());
 		classPath.add(project.getBuild().getOutputDirectory());
 
 		URL[] urls = new URL[classPath.size()];
 		int i = 0;
 		for (String entry : classPath) {
-			getLog().debug("use classPath entry " + entry);
+			getLog().info("use classPath entry " + entry);
 			urls[i] = new File(entry).toURI().toURL();
 			i++; // Important
 		}
