@@ -17,7 +17,7 @@
 		<!-- we need to upgrade the validation-api to 1.1.0.Final as soon as we 
 			can upgrade hibernate to Hibernate-validation 5 -->
 		<validation-api.version>1.0.0.GA</validation-api.version>
-		<hibernate-validator.version>4.2.0.Final</hibernate-validator.version>
+		<hibernate-validator.version>5.3.5.Final</hibernate-validator.version>
 		<version.maven-deploy-plugin>2.8.2</version.maven-deploy-plugin>
 		<version.nexus-staging-maven-plugin>1.6.5</version.nexus-staging-maven-plugin>
 		<version.jackson>2.5.3</version.jackson>
